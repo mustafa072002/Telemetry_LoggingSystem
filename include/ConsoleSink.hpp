@@ -9,7 +9,7 @@ class ConsoleSink : public ILogSink
 public:
     /* Only One Object Cans Access Console */
     /* Access point to the single instance */
-    static ConsoleSink &instance();
+    static ConsoleSink& instance();
 
     /* Delete Copy Constructor and Copy Assignment operator (Only one Console Object) */
     ConsoleSink(const ConsoleSink &obj) = delete;

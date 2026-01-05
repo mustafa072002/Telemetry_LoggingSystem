@@ -8,7 +8,7 @@ class FileSink : public ILogSink
 {
 
 private:
-    int fd;
+    int File;
 public:
 
     /* Constructors */
@@ -16,17 +16,17 @@ public:
     FileSink() = delete;
 
     /* Parametrized Constructor for File Path*/
-    FileSink(std::string& path);
+    FileSink(const std::string& path);
 
-    /* Delete Copy Constructor and Copy Assignment Operator as File Can be Accessed By one Object */
+    /* Delete Copy Constructor and Copy Assignment Operator as each File Can be Accessed By one Object */
     FileSink(const FileSink& obj) = delete;
 
     FileSink& operator=(const FileSink& obj) = delete;
 
-    /* Default Move Constructor and Move Assignment Operator */
-    FileSink(FileSink&& obj);
+    /* Move Constructor and Move Assignment Operator */
+    FileSink(FileSink&& obj) noexcept;
 
-    FileSink& operator=(FileSink&& obj);
+    FileSink& operator=(FileSink&& obj) noexcept;
 
 
     ~FileSink();
