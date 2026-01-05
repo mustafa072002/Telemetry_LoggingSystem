@@ -7,26 +7,29 @@
 class ConsoleSink : public ILogSink
 {
 public:
-
-    /* Constructors */
-
-    ConsoleSink() = default;
+    /* Only One Object Cans Access Console */
+    /* Access point to the single instance */
+    static ConsoleSink &instance();
 
     /* Delete Copy Constructor and Copy Assignment operator (Only one Console Object) */
-    ConsoleSink(const ConsoleSink& obj) = delete;
+    ConsoleSink(const ConsoleSink &obj) = delete;
 
-    ConsoleSink& operator=(const ConsoleSink& obj) = delete;
+    ConsoleSink &operator=(const ConsoleSink &obj) = delete;
 
-    /* Default Move Constructor and Move Assignment Operator */
-    ConsoleSink(ConsoleSink&& obj) = default;
+    /* Delete Move Constructor and Move Assignment Operator */
+    ConsoleSink(ConsoleSink &&obj) = delete;
 
-    ConsoleSink& operator=(ConsoleSink&& obj) = default;
-
-
-    ~ConsoleSink() = default;
+    ConsoleSink &operator=(ConsoleSink &&obj) = delete;
 
     /* Overriding write Function */
-    void write(const LogMessage& msg) const override; 
+    void write(const LogMessage &msg) const override;
+
+private:
+    /* Constructors Private */
+    /* Singleton */
+    ConsoleSink() = default;
+
+    ~ConsoleSink() = default;
 };
 
 #endif
