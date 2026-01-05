@@ -1,4 +1,0 @@
-/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/CMakeFiles/Telemetry_LoggingSystem.dir
-/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/CMakeFiles/test.dir
-/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/CMakeFiles/edit_cache.dir
-/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/CMakeFiles/rebuild_cache.dir
