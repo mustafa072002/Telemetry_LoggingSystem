@@ -46,3 +46,9 @@ std::string LogMessage::getMessage() const
 {
     return fullMsg;
 }
+
+/* Implemenation of << Operator Overload */
+std::ostream& operator<<(std::ostream& os , const LogMessage& msg) {
+    os << msg.fullMsg ;
+    return os ;
+}

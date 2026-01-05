@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/Telemetry_LoggingSystem.dir/test/LogMessage_test.cpp.o CMakeFiles/Telemetry_LoggingSystem.dir/src/LogMessage.cpp.o -o Telemetry_LoggingSystem  /usr/local/lib/libgtest.a /usr/local/lib/libgtest_main.a /usr/local/lib/libgtest.a 

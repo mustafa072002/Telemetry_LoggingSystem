@@ -1,0 +1,5 @@
+if(EXISTS "/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/Telemetry_LoggingSystem[1]_tests.cmake")
+  include("/home/mustafa/Embedded_ITI_9M/projects/Telemetry_LoggingSystem/build/Telemetry_LoggingSystem[1]_tests.cmake")
+else()
+  add_test(Telemetry_LoggingSystem_NOT_BUILT Telemetry_LoggingSystem_NOT_BUILT)
+endif()

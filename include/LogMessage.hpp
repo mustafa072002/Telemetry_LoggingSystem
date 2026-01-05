@@ -42,8 +42,13 @@ public:
     /* 5- Destructor */
     ~LogMessage() = default;
 
+    
     void fillMessage(std::string appName , std::string context , std::string severity ,std::string payLoad);
     std::string getMessage() const;
+    
+    /* Operator << Overloading */
+    friend std::ostream& operator<<(std::ostream& os ,const LogMessage& msg);
 };
+
 
 #endif
