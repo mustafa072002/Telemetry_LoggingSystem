@@ -7,7 +7,7 @@
 class ConsoleSink : public ILogSink
 {
 public:
-    /* Only One Object Cans Access Console */
+    /* Only One Object Can Access Console */
     /* Access point to the single instance */
     static ConsoleSink& instance();
 

@@ -6,7 +6,7 @@
 
 FileSink::FileSink(const std::string &path)
 {
-    open(path.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
+    File = open(path.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
 }
 
 FileSink::FileSink(FileSink &&obj) noexcept
@@ -39,7 +39,12 @@ FileSink::~FileSink()
 
 void FileSink::write(const LogMessage &msg) const
 {
-    if (File == -1) return;
+    if (File == -1)
+    {
+        std::cerr << "File not open for writing" << std::endl;
+        return;
+    }
+    std::cout << "Writing to File: " << msg.getMessage() << std::endl;
     std::string Log = msg.getMessage() + "\n";
     ::write(File, Log.c_str(), Log.size());
 }
