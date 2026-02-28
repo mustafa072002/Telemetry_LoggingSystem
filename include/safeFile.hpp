@@ -29,36 +29,97 @@
 
 
 
+
+/**
+ * @class safeFile
+ * @brief RAII-compliant wrapper for POSIX file operations.
+ *
+ * This class manages a file descriptor, ensuring safe acquisition and release of file resources.
+ * Only move semantics are allowed; copy semantics are deleted to prevent resource duplication.
+ */
 class safeFile
 {
 private:
-    int32_t file;
+    int32_t file; /**< POSIX file descriptor. */
 
 public:
-    // Delete Default Constructor (no Path Given)
+    /**
+     * @brief Deleted default constructor. Prevents file-less objects.
+     */
     safeFile() = delete;
 
-    // Parametrized Constructor for File Path
-    safeFile(const std::string path);
+    /**
+     * @brief Opens a file and acquires its descriptor.
+     * @param path Path to the file.
+     */
+    safeFile(const std::string& path);
 
-    // Delete Copy Semantics
+    /**
+     * @brief Deleted copy constructor.
+     */
     safeFile(const safeFile &obj) = delete;
 
+    /**
+     * @brief Deleted copy assignment operator.
+     */
     safeFile &operator=(const safeFile &obj) = delete;
 
-    // Move Semantics
+    /**
+     * @brief Move constructor. Transfers ownership of file descriptor.
+     * @param obj Rvalue reference to another safeFile.
+     */
     safeFile(safeFile &&obj) noexcept;
 
+    /**
+     * @brief Move assignment operator. Transfers ownership of file descriptor.
+     * @param obj Rvalue reference to another safeFile.
+     * @return Reference to this object.
+     */
     safeFile &operator=(safeFile &&obj) noexcept;
 
+    /**
+     * @brief Destructor. Closes the file if open.
+     */
     ~safeFile();
 
-    // safeFile methods
+    /**
+     * @brief Opens a file, closing any previously opened file.
+     * @param path Path to the file.
+     * @return True if successful, false otherwise.
+     */
     bool open(const std::string path);
+
+    /**
+     * @brief Closes the file if open.
+     * @return True if successful, false otherwise.
+     */
     bool close();
+
+    /**
+     * @brief Writes data to the file.
+     * @param data String data to write.
+     * @return True if successful, false otherwise.
+     */
     bool write(const std::string data);
-    bool read(std::string &buffer, int32_t size);
+
+    /**
+     * @brief Reads data from the file.
+     * @param buffer Output string buffer.
+     * @param size Number of bytes to read.
+     * @return True if successful, false otherwise.
+     */
+    bool read(std::string &buffer, int32_t size) const;
+
+    /**
+     * @brief Checks if the file is open.
+     * @return True if open, false otherwise.
+     */
     bool isOpen() const;
+
+    /**
+     * @brief Checks if the file is closed.
+     * @return True if closed, false otherwise.
+     */
     bool isClosed() const;
 };
 

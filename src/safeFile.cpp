@@ -4,20 +4,30 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-// Parametrized Constructor
-safeFile::safeFile(const std::string path)
+/**
+ * @brief Constructs a safeFile and opens the specified file.
+ * @param path Path to the file.
+ */
+safeFile::safeFile(const std::string& path)
 {
     file = ::open(path.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
 }
 
-// Move Constructor
+/**
+ * @brief Move constructor. Transfers file descriptor ownership.
+ * @param obj Rvalue reference to another safeFile.
+ */
 safeFile::safeFile(safeFile &&obj) noexcept
 {
     this->file = obj.file;
     obj.file = -1;
 }
 
-// Move Assignment operator
+/**
+ * @brief Move assignment operator. Transfers file descriptor ownership.
+ * @param obj Rvalue reference to another safeFile.
+ * @return Reference to this object.
+ */
 safeFile &safeFile::operator=(safeFile &&obj) noexcept
 {
     if (this != &obj)
@@ -32,7 +42,9 @@ safeFile &safeFile::operator=(safeFile &&obj) noexcept
     return *this;
 }
 
-// Destructor
+/**
+ * @brief Destructor. Closes the file if open.
+ */
 safeFile::~safeFile()
 {
     if (file != -1)
@@ -41,7 +53,11 @@ safeFile::~safeFile()
     }
 }
 
-// File Methods
+/**
+ * @brief Opens a file, closing any previously opened file.
+ * @param path Path to the file.
+ * @return True if successful, false otherwise.
+ */
 bool safeFile::open(const std::string path)
 {
     if (file != -1)
@@ -60,8 +76,12 @@ bool safeFile::open(const std::string path)
     }
 }
 
+/**
+ * @brief Closes the file if open.
+ * @return True if successful, false otherwise.
+ */
 bool safeFile::close()
-{   
+{
     if (file == -1)
     {
         // File is already closed
@@ -79,6 +99,11 @@ bool safeFile::close()
     }
 }
 
+/**
+ * @brief Writes data to the file.
+ * @param data String data to write.
+ * @return True if successful, false otherwise.
+ */
 bool safeFile::write(const std::string data)
 {
     if (file == -1 || data.empty())
@@ -94,7 +119,13 @@ bool safeFile::write(const std::string data)
     return true;
 }
 
-bool safeFile::read(std::string &buffer, int32_t size)
+/**
+ * @brief Reads data from the file.
+ * @param buffer Output string buffer.
+ * @param size Number of bytes to read.
+ * @return True if successful, false otherwise.
+ */
+bool safeFile::read(std::string &buffer, int32_t size) const
 {
     if (file == -1 || size <= 0)
     {
@@ -115,11 +146,19 @@ bool safeFile::read(std::string &buffer, int32_t size)
     return true;
 }
 
+/**
+ * @brief Checks if the file is open.
+ * @return True if open, false otherwise.
+ */
 bool safeFile::isOpen() const
 {
     return (file != -1);
 }
 
+/**
+ * @brief Checks if the file is closed.
+ * @return True if closed, false otherwise.
+ */
 bool safeFile::isClosed() const
 {
     return (file == -1);
