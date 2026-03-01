@@ -41,6 +41,7 @@ class safeFile
 {
 private:
     int32_t file; /**< POSIX file descriptor. */
+    std::string path; 
 
 public:
     /**
@@ -81,6 +82,12 @@ public:
      * @brief Destructor. Closes the file if open.
      */
     ~safeFile();
+
+    /**
+     * @brief Opens a the path File
+     * @return True if successful, false otherwise.
+     */
+    bool open();
 
     /**
      * @brief Opens a file, closing any previously opened file.

@@ -8,9 +8,8 @@
  * @brief Constructs a safeFile and opens the specified file.
  * @param path Path to the file.
  */
-safeFile::safeFile(const std::string& path)
+safeFile::safeFile(const std::string& path) : path{path}
 {
-    file = ::open(path.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
 }
 
 /**
@@ -18,7 +17,8 @@ safeFile::safeFile(const std::string& path)
  * @param obj Rvalue reference to another safeFile.
  */
 safeFile::safeFile(safeFile &&obj) noexcept
-{
+{   
+    this->path = obj.path;
     this->file = obj.file;
     obj.file = -1;
 }
@@ -36,6 +36,7 @@ safeFile &safeFile::operator=(safeFile &&obj) noexcept
         {
             ::close(this->file);
         }
+        this->path = obj.path;
         this->file = obj.file;
         obj.file = -1;
     }
@@ -50,6 +51,24 @@ safeFile::~safeFile()
     if (file != -1)
     {
         ::close(file);
+    }
+}
+
+bool safeFile::open()
+{
+    if (file != -1)
+    {
+        ::close(file);
+    }
+    int32_t state = ::open(path.c_str(), O_RDWR | O_CREAT | O_APPEND, 0644);
+    if (state == -1)
+    {
+        return false;
+    }
+    else
+    {
+        file = state;
+        return true;
     }
 }
 
