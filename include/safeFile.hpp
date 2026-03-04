@@ -84,17 +84,30 @@ public:
     ~safeFile();
 
     /**
-     * @brief Opens a the path File
+     * @brief Opens the stored path file in read-write mode.
      * @return True if successful, false otherwise.
      */
     bool open();
 
     /**
-     * @brief Opens a file, closing any previously opened file.
+     * @brief Opens a file in read-write mode, closing any previously opened file.
      * @param path Path to the file.
      * @return True if successful, false otherwise.
      */
-    bool open(const std::string path);
+    bool open(const std::string& path);
+
+    /**
+     * @brief Opens the stored path file in read-only mode.
+     * @return True if successful, false otherwise.
+     */
+    bool openReadOnly();
+
+    /**
+     * @brief Opens a file in read-only mode, closing any previously opened file.
+     * @param path Path to the file.
+     * @return True if successful, false otherwise.
+     */
+    bool openReadOnly(const std::string& path);
 
     /**
      * @brief Closes the file if open.
@@ -107,7 +120,7 @@ public:
      * @param data String data to write.
      * @return True if successful, false otherwise.
      */
-    bool write(const std::string data);
+    bool write(const std::string& data);
 
     /**
      * @brief Reads data from the file.

@@ -1,7 +1,7 @@
 #ifndef I_TELEMETRY_SOURCE_HPP
 #define I_TELEMETRY_SOURCE_HPP
 
-#include <iostream> 
+#include <string> 
 
 class ITelemetrySource
 {

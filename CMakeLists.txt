@@ -26,9 +26,15 @@ enable_testing()
 
 
 # -------- For FileSink Tests --------
-set(SRC_FILE src/FileSink.cpp src/LogMessage.cpp)
-set(SRC_TEST test/FileSink_test.cpp)
-set(TEST_NAME FileSinkTest)
+# set(SRC_FILE src/FileSink.cpp src/LogMessage.cpp)
+# set(SRC_TEST test/FileSink_test.cpp)
+# set(TEST_NAME FileSinkTest)
+
+
+# -------- For FileTelemetrySourceImpl Tests --------
+set(SRC_FILE src/safeFile.cpp src/Telemetry/FileTelemetrySourceImpl.cpp)
+set(SRC_TEST test/FileTelemetrySourceImpl_test.cpp)
+set(TEST_NAME FileTelemetrySourceImplTest)
 
 
 
@@ -36,7 +42,7 @@ set(TEST_NAME FileSinkTest)
 # Create Executable for Tests
 add_executable(${TEST_NAME} ${SRC_FILE} ${SRC_TEST})
 
-target_include_directories(${TEST_NAME} PUBLIC include)
+target_include_directories(${TEST_NAME} PUBLIC include include/Logger include/Telemetry)
 
 target_link_libraries(${TEST_NAME}
     GTest::GTest 

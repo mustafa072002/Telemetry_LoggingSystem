@@ -7,7 +7,7 @@ FileTelemetrySourceImpl::FileTelemetrySourceImpl(const std::string& path) : File
 
 bool FileTelemetrySourceImpl::openSource()
 {
-    return File.open();
+    return File.openReadOnly();
 }
 
 bool FileTelemetrySourceImpl::readSource(std::string& out)

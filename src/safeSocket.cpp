@@ -10,7 +10,7 @@
  * @brief Constructs a safeSocket and creates a Unix domain socket.
  * @param path Path to the socket file.
  */
-safeSocket::safeSocket(const std::string &path) : path{path} , connected{false}
+safeSocket::safeSocket(const std::string &path) : path{path} , connected{false} , sockFd{-1}
 {
     // 1. Create socket
     sockFd = ::socket(AF_UNIX, SOCK_STREAM, 0);
@@ -23,7 +23,7 @@ safeSocket::safeSocket(const std::string &path) : path{path} , connected{false}
 safeSocket::safeSocket(safeSocket &&obj) noexcept
 {
     this->sockFd = obj.sockFd;
-    this->path = obj.path;
+    this->path = std::move(obj.path);
     this->connected = obj.connected;
 
     obj.sockFd = -1;
@@ -45,7 +45,7 @@ safeSocket &safeSocket::operator=(safeSocket &&obj) noexcept
             ::close(sockFd);
         }
         this->sockFd = obj.sockFd;
-        this->path = obj.path;
+        this->path = std::move(obj.path);
         this->connected = obj.connected;
 
         obj.sockFd = -1;
@@ -77,6 +77,10 @@ bool safeSocket::connect()
     }
     else
     {
+        if(connected)
+        {
+            return true;
+        }
         // 1. Prepare Address
         sockaddr_un address = {};
         address.sun_family = AF_UNIX;
@@ -117,6 +121,17 @@ bool safeSocket::connect(const std::string& path)
         address.sun_family = AF_UNIX;
         std::strncpy(address.sun_path, path.c_str(), sizeof(address.sun_path) - 1);
 
+        if (connected)
+        {
+            // Already connected to a socket, disconnect first
+            disconnect();
+            // Recreate socket since disconnect() closed the fd
+            sockFd = ::socket(AF_UNIX, SOCK_STREAM, 0);
+            if (sockFd == -1)
+            {
+                return false;
+            }
+        }
         // 2. Connect
         int state = ::connect(sockFd, (sockaddr *)&address, sizeof(address));
 
@@ -190,18 +205,17 @@ bool safeSocket::receiveData(std::string &buffer, int32_t size)
         return false;
     }
 
-    char *temp_buffer = new char[size];
-    int32_t bytes_read = ::recv(sockFd, temp_buffer, size, 0);
+    std::string temp_buffer(size, '\0');
+    int32_t bytes_read = ::recv(sockFd, &temp_buffer[0], size, 0);
 
     if (bytes_read == -1 || bytes_read == 0)
     {
-        delete[] temp_buffer;
         connected = false;
         return false;
     }
 
-    buffer.assign(temp_buffer, bytes_read);
-    delete[] temp_buffer;
+    temp_buffer.resize(bytes_read);
+    buffer = std::move(temp_buffer);
     connected = true;
     return true;
 }

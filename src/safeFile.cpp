@@ -3,12 +3,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-
 /**
  * @brief Constructs a safeFile and opens the specified file.
  * @param path Path to the file.
  */
-safeFile::safeFile(const std::string& path) : path{path}
+safeFile::safeFile(const std::string& path) : path{path} , file{-1}
 {
 }
 
@@ -18,7 +17,7 @@ safeFile::safeFile(const std::string& path) : path{path}
  */
 safeFile::safeFile(safeFile &&obj) noexcept
 {   
-    this->path = obj.path;
+    this->path = std::move(obj.path);
     this->file = obj.file;
     obj.file = -1;
 }
@@ -36,7 +35,7 @@ safeFile &safeFile::operator=(safeFile &&obj) noexcept
         {
             ::close(this->file);
         }
-        this->path = obj.path;
+        this->path = std::move(obj.path);
         this->file = obj.file;
         obj.file = -1;
     }
@@ -73,11 +72,56 @@ bool safeFile::open()
 }
 
 /**
+ * @brief Opens the stored path file in read-only mode.
+ * @return True if successful, false otherwise.
+ */
+bool safeFile::openReadOnly()
+{
+    if (file != -1)
+    {
+        ::close(file);
+    }
+    int32_t state = ::open(path.c_str(), O_RDONLY);
+    if (state == -1)
+    {
+        return false;
+    }
+    else
+    {
+        file = state;
+        return true;
+    }
+}
+
+/**
+ * @brief Opens a file in read-only mode, closing any previously opened file.
+ * @param path Path to the file.
+ * @return True if successful, false otherwise.
+ */
+bool safeFile::openReadOnly(const std::string& path)
+{
+    if (file != -1)
+    {
+        ::close(file);
+    }
+    int32_t state = ::open(path.c_str(), O_RDONLY);
+    if (state == -1)
+    {
+        return false;
+    }
+    else
+    {
+        file = state;
+        return true;
+    }
+}
+
+/**
  * @brief Opens a file, closing any previously opened file.
  * @param path Path to the file.
  * @return True if successful, false otherwise.
  */
-bool safeFile::open(const std::string path)
+bool safeFile::open(const std::string& path)
 {
     if (file != -1)
     {
@@ -123,7 +167,7 @@ bool safeFile::close()
  * @param data String data to write.
  * @return True if successful, false otherwise.
  */
-bool safeFile::write(const std::string data)
+bool safeFile::write(const std::string& data)
 {
     if (file == -1 || data.empty())
     {
@@ -151,17 +195,16 @@ bool safeFile::read(std::string &buffer, int32_t size) const
         return false;
     }
 
-    char *temp_buffer = new char[size];
-    int32_t bytes_read = ::read(file, temp_buffer, size);
+    std::string temp_buffer(size, '\0');
+    int32_t bytes_read = ::read(file, &temp_buffer[0], size);
 
     if (bytes_read == -1)
     {
-        delete[] temp_buffer;
         return false;
     }
 
-    buffer.assign(temp_buffer, bytes_read);
-    delete[] temp_buffer;
+    temp_buffer.resize(bytes_read);
+    buffer = std::move(temp_buffer);
     return true;
 }
 
